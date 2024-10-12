@@ -29,11 +29,10 @@ type Error = String
 -- Parser takes a string and returns a list of the parsed item and the remaining string
 newtype Parser a = Parser { runParser :: String -> Maybe (a, String) }
 
-parseChar :: Parser Char
-parseChar = Parser $ \inp -> case inp of
+parseChar :: Char -> Parser Char
+parseChar x = Parser $ \inp -> case inp of
   [] -> Nothing
   c : cs -> Just(c, cs)
-
 
 main :: IO ()
 main = undefined
