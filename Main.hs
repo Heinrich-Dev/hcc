@@ -1,10 +1,12 @@
 {-
-Sources: 
+Sources:
+Hoogle - https://hoogle.haskell.org
 Monadic Parsing Paper - https://www.cs.tufts.edu/comp/150FP/archive/graham-hutton/monadic-parsing-jfp.pdf
 JSON Parser from Scratch in Haskell - https://www.youtube.com/watch?v=N9RUqGYuGfw&t=5711s
 -}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use lambda-case" #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Main where
 
@@ -25,6 +27,13 @@ data Token = TYPE | ID | POINTER
            deriving (Show)
 -- Parser takes a string and returns a list of the parsed item and the remaining string
 newtype Parser a = Parser { runParser :: String -> Maybe (a, String) }
+
+instance Functor Parser where
+    fmap f (Parser a) = Parser $ \input -> _a
+
+instance Applicative Parser where
+
+
 -- x is expected character
 parseChar :: Char -> Parser Char
 parseChar x = Parser $ \inp -> case inp of
@@ -32,7 +41,7 @@ parseChar x = Parser $ \inp -> case inp of
   _ -> Nothing
 
 parseString :: [Char] -> Parser [Char]
-parseString str = map parseChar
+parseString str = undefined
 
 main :: IO ()
 main = undefined
