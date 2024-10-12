@@ -3,7 +3,6 @@ Sources:
 Monadic Parsing Paper - https://www.cs.tufts.edu/comp/150FP/archive/graham-hutton/monadic-parsing-jfp.pdf
 JSON Parser from Scratch in Haskell - https://www.youtube.com/watch?v=N9RUqGYuGfw&t=5711s
 -}
-{-# LANGUAGE InstanceSigs #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use lambda-case" #-}
 
@@ -24,15 +23,16 @@ data Token = TYPE | ID | POINTER
            | INLINE_COMMENT | GROUP_COMMENT -- comments
            | INCLUDE | PRAGMA | ASM -- compiler directives
            deriving (Show)
-
-type Error = String
 -- Parser takes a string and returns a list of the parsed item and the remaining string
 newtype Parser a = Parser { runParser :: String -> Maybe (a, String) }
-
+-- x is expected character
 parseChar :: Char -> Parser Char
 parseChar x = Parser $ \inp -> case inp of
-  [] -> Nothing
-  c : cs -> Just(c, cs)
+  c : cs | c == x -> Just(c, cs)
+  _ -> Nothing
+
+parseString :: [Char] -> Parser [Char]
+parseString str = map parseChar
 
 main :: IO ()
 main = undefined
