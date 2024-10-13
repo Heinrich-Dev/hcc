@@ -6,13 +6,14 @@ JSON Parser from Scratch in Haskell - https://www.youtube.com/watch?v=N9RUqGYuGf
 -}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use lambda-case" #-}
+{-# HLINT ignore "Use const" #-}
 {-# LANGUAGE InstanceSigs #-}
 
 module Main where
 
 import System.IO ()
 import System.Environment (getArgs)
-import Control.Monad (liftM, ap)
+import Control.Monad ()
 
 data Token = TYPE | ID | POINTER
            | L_PAREN | R_PAREN | L_BRACE | R_BRACE | L_BRACKET | R_BRACKET | SEMICOLON | COLON -- single character tokens
@@ -29,19 +30,29 @@ data Token = TYPE | ID | POINTER
 newtype Parser a = Parser { runParser :: String -> Maybe (a, String) }
 
 instance Functor Parser where
-    fmap f (Parser a) = Parser $ \input -> _a
+    fmap :: (a -> b) -> Parser a -> Parser b
+    fmap f (Parser a) = Parser $ \input -> do -- using do notation since Maybe is a monad
+        (x, input') <- a input
+        Just (f x, input')
 
 instance Applicative Parser where
+    pure :: a -> Parser a
+    pure a = Parser $ \input -> Just (a, input) -- Given a, return a, don't consume input.
 
+    (<*>) :: Parser (a -> b) -> Parser a -> Parser b
+    (Parser a1) <*> (Parser a2) = Parser $ \input -> do -- using do notation since Maybe is a monad
+        (f, input') <- a1 input
+        (a, input'') <- a2 input'
+        Just (f a, input'')
 
 -- x is expected character
 parseChar :: Char -> Parser Char
-parseChar x = Parser $ \inp -> case inp of
+parseChar x = Parser $ \input -> case input of
   c : cs | c == x -> Just(c, cs)
   _ -> Nothing
 
 parseString :: [Char] -> Parser [Char]
-parseString str = undefined
+parseString = traverse parseChar -- this is what i did all the funny applicative functor stuff for.
 
 main :: IO ()
 main = undefined
