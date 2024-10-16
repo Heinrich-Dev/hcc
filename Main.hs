@@ -7,7 +7,6 @@ Writing a C Compiler from Scratch - https://norasandler.com/2017/11/29/Write-a-C
 -}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use lambda-case" #-}
-{-# HLINT ignore "Use const" #-}
 {-# LANGUAGE InstanceSigs #-}
 
 module Main where
@@ -23,7 +22,7 @@ type DataType = Token
 type Operator = Token
 type Punctuation = Token
 
-data Token = TYPE | ID | POINTER | NUM
+data Token = TYPE | ID | POINTER | NUM Integer
            | L_PAREN | R_PAREN | L_BRACE | R_BRACE | L_BRACKET | R_BRACKET | SEMICOLON | COLON -- single character tokens
            | PLUS | MINUS | MULTI | DIV -- arithmetic operations
            | AND | OR | XOR | SHIFT_LEFT | SHIFT_RIGHT | SHIFT_RIGHT_GETS | SHIFT_LEFT_GETS | NOT -- bitwise operations
@@ -55,7 +54,7 @@ instance Applicative Parser where
         Just (f a, input'')
 
 instance Alternative Parser where -- so i can chain parsers together
-    empty = Parser $ \_ -> Nothing
+    empty = Parser $ const Nothing
     (Parser p1) <|> (Parser p2) = Parser $ \input ->
         p1 input <|> p2 input
 
@@ -102,10 +101,10 @@ parseWhiteSpace = f <$> (parseString " " <|> parseString "\n" <|> parseString "\
 
 parseNumber :: Parser Token
 parseNumber = f <$> parseSpan isDigit
-    where f nums = read nums
+    where f nums = NUM $ read nums
 
 parseTokens :: Parser Token
-parseTokens = parsePunctuation <|> parseDataType <|> parseKeyword <|> parseWhiteSpace
+parseTokens = parsePunctuation <|> parseDataType <|> parseKeyword <|> parseWhiteSpace <|> parseNumber
 
 main :: IO ()
 main = do
