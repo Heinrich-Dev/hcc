@@ -3,8 +3,8 @@
 {-# HLINT ignore "Use lambda-case" #-}
 module Lex where
 
-import Control.Applicative ()
-import Data.Char ()
+import Control.Applicative
+import Data.Char
 
 data Token = DATA_TYPE | ID | L_PAREN | R_PAREN | R_BRACE | L_BRACE | KEYWORD String | SEMICOLON
 
@@ -28,6 +28,13 @@ instance Applicative Parser where
         Nothing -> Nothing
         Just (c, rest) -> parse (fmap c y) rest
 
+instance Alternative Parser where
+    empty :: Parser a
+    empty = P $ \input -> Nothing -- hLint complains if i write it as P $ \input -> Nothing. I think it makes it more clear what empty does, so there you go.
+
+    (<|>) :: Parser a -> Parser a -> Parser a
+    p1 <|> p2 = P $ \input -> parse p1 input <|> parse p2 input
+
 parseChar :: Char -> Parser Char
 parseChar x = P $ \input -> case input of
     c:cs | c == x -> Just(c, cs)
@@ -35,3 +42,6 @@ parseChar x = P $ \input -> case input of
 
 parseString :: String -> Parser String
 parseString = traverse parseChar
+
+parseDigit :: Char -> Parser Char
+parseDigit x = case isDigit x of
