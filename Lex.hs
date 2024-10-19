@@ -13,6 +13,15 @@ newtype Parser a = P (String -> Maybe(a, String))
 parse :: Parser a -> String -> Maybe (a, String)
 parse (P p) = p
 
+instance Monad Parser where
+    return :: a -> Parser a
+    return a = P $ \input -> Just (a, input)
+
+    (>>=) :: Parser a -> (a -> Parser b) -> Parser b
+    a >>= f = P $ \input -> case parse a input of
+        Just(x, xs) -> parse (f x) xs
+        _ -> Nothing
+
 instance Functor Parser where
     fmap :: (a -> b) -> Parser a -> Parser b
     fmap f p = P $ \input -> case parse p input of
@@ -30,7 +39,7 @@ instance Applicative Parser where
 
 instance Alternative Parser where
     empty :: Parser a
-    empty = P $ \input -> Nothing -- hLint complains if i write it as P $ \input -> Nothing. I think it makes it more clear what empty does, so there you go.
+    empty = P $ const Nothing
 
     (<|>) :: Parser a -> Parser a -> Parser a
     p1 <|> p2 = P $ \input -> parse p1 input <|> parse p2 input
@@ -43,5 +52,6 @@ parseChar x = P $ \input -> case input of
 parseString :: String -> Parser String
 parseString = traverse parseChar
 
-parseDigit :: Char -> Parser Char
-parseDigit x = case isDigit x of
+--predicate :: (Char -> Bool) -> Parser Char
+--predicate f = do x <- parseChar
+    --if f x then return x else empty
