@@ -44,6 +44,11 @@ instance Alternative Parser where
     (<|>) :: Parser a -> Parser a -> Parser a
     p1 <|> p2 = P $ \input -> parse p1 input <|> parse p2 input
 
+get :: Parser Char
+get = P $ \input -> case input of
+    (x:xs) -> Just(x, xs)
+    _ -> Nothing
+
 parseChar :: Char -> Parser Char
 parseChar x = P $ \input -> case input of
     c:cs | c == x -> Just(c, cs)
@@ -52,6 +57,10 @@ parseChar x = P $ \input -> case input of
 parseString :: String -> Parser String
 parseString = traverse parseChar
 
---predicate :: (Char -> Bool) -> Parser Char
---predicate f = do x <- parseChar
-    --if f x then return x else empty
+predicate :: (Char -> Bool) -> Parser Char
+predicate f = do 
+    x <- get
+    if f x then return x else empty
+
+parseDigit :: Parser Char
+parseDigit = predicate isDigit
