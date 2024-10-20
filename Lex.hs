@@ -1,6 +1,5 @@
 {-# LANGUAGE InstanceSigs #-}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use lambda-case" #-}
+{-# LANGUAGE LambdaCase #-}
 module Lex where
 
 import Control.Applicative
@@ -45,12 +44,12 @@ instance Alternative Parser where
     p1 <|> p2 = P $ \input -> parse p1 input <|> parse p2 input
 
 get :: Parser Char
-get = P $ \input -> case input of
+get = P $ \case
     (x:xs) -> Just(x, xs)
     _ -> Nothing
 
 parseChar :: Char -> Parser Char
-parseChar x = P $ \input -> case input of
+parseChar x = P $ \case
     c:cs | c == x -> Just(c, cs)
     _ -> Nothing
 
@@ -60,7 +59,12 @@ parseString = traverse parseChar
 predicate :: (Char -> Bool) -> Parser Char
 predicate f = do 
     x <- get
-    if f x then return x else empty
+    if f x
+        then return x 
+        else empty
 
 parseDigit :: Parser Char
 parseDigit = predicate isDigit
+
+parseNumber :: Parser String
+parseNumber = P $ \input -> Just(span isDigit input)
