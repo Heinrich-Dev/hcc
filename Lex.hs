@@ -1,3 +1,7 @@
+{-
+Henry Boekhoff - 10/21/24
+SOURCES: Functional Parsing by Computerphile - https://www.youtube.com/watch?v=dDtZLm7HIJs (The video and the functional parsing library provided.)
+-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE LambdaCase #-}
 module Lex where
@@ -66,5 +70,17 @@ predicate f = do
 parseDigit :: Parser Char
 parseDigit = predicate isDigit
 
-parseNumber :: Parser String
-parseNumber = P $ \input -> Just(span isDigit input)
+--parseNumber :: Parser String
+--parseNumber = P $ \input -> Just(span isDigit input)
+
+parseNumber :: Parser Int
+parseNumber = do x <- some parseDigit
+                 return (read x)
+
+parseInteger :: Parser Int
+parseInteger = do 
+                parseChar '-'
+                x <- parseNumber
+                return (-x)
+                <|>
+                parseNumber
