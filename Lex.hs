@@ -75,7 +75,14 @@ parseDigit = predicate isDigit
 
 parseNumber :: Parser Int
 parseNumber = do x <- some parseDigit
-                 return (read x)
+                 return (read x :: Int)
+
+parseDec :: Parser Float
+parseDec = do x <- some parseDigit
+              x2 <- parseString "."
+              x3 <- some parseDigit
+              let y = x ++ x2 ++ x3
+              return (read y:: Float)
 
 parseInteger :: Parser Int
 parseInteger = do 
@@ -84,6 +91,14 @@ parseInteger = do
                 return (-x)
                 <|>
                 parseNumber
+
+parseFloat :: Parser Float
+parseFloat = do
+              parseChar '-'
+              x <- parseDec
+              return(-x)
+              <|>
+              parseDec
 
 parseSpace :: Parser Char
 parseSpace = predicate isSpace
