@@ -1,6 +1,12 @@
 {-
 Henry Boekhoff - 10/21/24
-SOURCES: Functional Parsing by Computerphile - https://www.youtube.com/watch?v=dDtZLm7HIJs (The video and the functional parsing library provided.)
+SOURCES:
+Hoogle - https://hoogle.haskell.org
+Monadic Parsing Paper - https://www.cs.tufts.edu/comp/150FP/archive/graham-hutton/monadic-parsing-jfp.pdf
+JSON Parser from Scratch in Haskell - https://www.youtube.com/watch?v=N9RUqGYuGfw&t=5711s
+Writing a C Compiler from Scratch - https://norasandler.com/2017/11/29/Write-a-Compiler.html
+Let's Build a Compiler - https://g-ford.github.io/cradle/basic_control_structures.html
+Functional Parsing by Computerphile - https://www.youtube.com/watch?v=dDtZLm7HIJs (The video and the functional parsing library provided.)
 -}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE LambdaCase #-}
@@ -67,9 +73,6 @@ predicate f = do
 
 parseDigit :: Parser Char
 parseDigit = predicate isDigit
-
---parseNumber :: Parser String
---parseNumber = P $ \input -> Just(span isDigit input)
 
 parseNumber :: Parser Int
 parseNumber = do x <- some parseDigit
