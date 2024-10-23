@@ -9,8 +9,6 @@ module Lex where
 import Control.Applicative
 import Data.Char
 
-data Token = DATA_TYPE | ID String | L_PAREN | R_PAREN | R_BRACE | L_BRACE | KEYWORD String | SEMICOLON deriving (Show)
-
 newtype Parser a = P (String -> Maybe(a, String))
 
 parse :: Parser a -> String -> Maybe (a, String)
@@ -82,7 +80,7 @@ parseDec = do x <- some parseDigit
               x2 <- parseString "."
               x3 <- some parseDigit
               let y = x ++ x2 ++ x3
-              return (read y:: Float)
+              return (read y :: Float)
 
 parseInteger :: Parser Int
 parseInteger = do 
@@ -107,21 +105,3 @@ parseWhiteSpace :: Parser () --this includes new lines thank god
 parseWhiteSpace = do 
                     some parseSpace
                     return ()
-
-parseDelims :: Parser Token
-parseDelims = f <$> (parseChar '{' <|> parseChar '}' <|> parseChar '(' <|> parseChar ')' <|> parseChar ';')
-    where f '{' = L_BRACE
-          f '}' = R_BRACE
-          f '(' = L_PAREN
-          f ')' = R_PAREN
-          f ';' = SEMICOLON
-          f _ = undefined
-
-parseKeywords :: Parser Token
-parseKeywords = f <$> (parseString "int" <|> parseString "return")
-    where f "int" = KEYWORD "int"
-          f "return" = KEYWORD "return"
-          f _ = undefined
-
---tokenize :: Parser Token
---tokenize = parseWhiteSpace <|> parseDelims <|> parseKeywords <|> parseString
