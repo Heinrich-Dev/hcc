@@ -12,8 +12,8 @@ Functional Parsing by Computerphile - https://www.youtube.com/watch?v=dDtZLm7HIJ
 {-# LANGUAGE LambdaCase #-}
 module Lex where
 
-import Control.Applicative ( Alternative(some, empty, (<|>)) )
-import Data.Char ( isDigit, isSpace )
+import Control.Applicative
+import Data.Char
 
 newtype Parser a = P (String -> Maybe(a, String))
 
@@ -106,7 +106,7 @@ parseSpace = predicate isSpace
 
 parseWhiteSpace :: Parser () --this includes new lines thank god
 parseWhiteSpace = do 
-                    some parseSpace
+                    many (predicate isSpace)
                     return ()
 
 parseToken :: Parser a -> Parser a
