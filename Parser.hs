@@ -10,7 +10,7 @@ Functional Parsing by Computerphile - https://www.youtube.com/watch?v=dDtZLm7HIJ
 -}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE LambdaCase #-}
-module Lex where
+module Parser where
 
 import Control.Applicative
 import Data.Char
