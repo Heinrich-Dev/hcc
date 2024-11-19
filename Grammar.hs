@@ -12,7 +12,9 @@ import Parser
 import Control.Applicative
 import Prelude
 
-data Expression = Num Int
+
+data Expression = Integer Int
+                | Float Float
                 | Add Expression Expression
                 | Mul Expression Expression
                 deriving (Show)
@@ -39,7 +41,8 @@ factor = do parseString "("
             parseString ")"
             return x
             <|>
-         do x <- number
-            return (Num x)
-
-number = parseTokenInt
+         do x <- parseTokenFloat
+            return (Float x)
+            <|>
+         do x <- parseTokenInt
+            return (Integer x)
