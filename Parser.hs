@@ -121,3 +121,4 @@ parseTokenInt = parseToken parseInteger
 
 parseTokenFloat :: Parser Float
 parseTokenFloat = parseToken parseFloat
+
