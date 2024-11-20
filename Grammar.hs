@@ -22,7 +22,7 @@ data Expression = Integer Int
 expression :: Parser Expression
 expression = do x <- term
                 parseString "+"
-                y <- term
+                y <- expression
                 return (Add x y)
                 <|>
                 term
@@ -37,7 +37,7 @@ term = do x <- factor
 
 factor :: Parser Expression
 factor = do parseString "("
-            x <- term
+            x <- expression
             parseString ")"
             return x
             <|>
