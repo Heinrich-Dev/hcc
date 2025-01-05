@@ -34,7 +34,7 @@ term = do x <- factor
           return (Mul x y)
           <|>
           factor
-
+--TODO: Parser does not recognize parentheses as implicit multiplication
 factor :: Parser Expression
 factor = do parseString "("
             x <- expression
