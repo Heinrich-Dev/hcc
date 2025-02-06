@@ -14,7 +14,7 @@ createFile :: String -> IO Handle
 createFile name = openFile name WriteMode
 
 createFormat :: Handle -> IO()
-createFormat handle = do hPutStrLn handle "format ELF64 executable 3"
+createFormat handle = do hPutStrLn handle "format ELF64 executable"
                          hPutStrLn handle "segment readable executable"
 
 createSectionData :: Handle -> IO()
