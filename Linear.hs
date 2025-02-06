@@ -13,7 +13,7 @@ emitLinearIR :: Expression -> Handle -> IO()
 emitLinearIR expr handle = hPutStrLn handle (emitInstruction expr)
 
 emitInstruction :: Expression -> String
-emitInstruction (Add x y) = "ADD " ++ emitInstruction x ++ emitInstruction y ++ "\n"
-emitInstruction (Mul x y) = "MUL " ++ emitInstruction x ++ emitInstruction y ++ "\n"
-emitInstruction (Integer x) = "LOAD $" ++ show x ++ "\n"
-emitInstruction (Float x) = "LOAD $" ++ show x ++ "\n"
+emitInstruction (Add x y) = emitInstruction x ++ emitInstruction y ++ "ADD\n"
+emitInstruction (Mul x y) = emitInstruction x ++ emitInstruction y ++ "MUL\n"
+emitInstruction (Integer x) = "PUSH $" ++ show x ++ "\n"
+emitInstruction (Float x) = "PUSH $" ++ show x ++ "\n"
