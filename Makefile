@@ -1,5 +1,5 @@
 Main:
-	ghc Main.hs
+	ghc --make -dynamic Main.hs
 clean:
 	rm -f Generator.hi Generator.o
 	rm -f Grammar.hi Grammar.o
