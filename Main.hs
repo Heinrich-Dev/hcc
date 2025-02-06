@@ -16,6 +16,7 @@ main = do
     print tree
     checkParse str
     linearify tree
+    putStrLn "Finished compilation!"
 
 checkArgs ["-h"] = usage >> exitSuccess
 checkArgs ["-v"] = version >> exitSuccess

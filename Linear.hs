@@ -6,10 +6,11 @@ linearify :: Expression -> IO()
 linearify expr = do 
     handle <- openFile "test.l" WriteMode
     emitLinearIR expr handle
+    hClose handle
     putStrLn "Finished generating linear IR..."
 
 emitLinearIR :: Expression -> Handle -> IO()
-emitLinearIR expr handle = hPutStrLn handle "dawg"
+emitLinearIR expr handle = hPutStrLn handle (emitInstruction expr)
 
 emitInstruction :: Expression -> String
 emitInstruction (Add x y) = "ADD " ++ emitInstruction x ++ emitInstruction y ++ "\n"
